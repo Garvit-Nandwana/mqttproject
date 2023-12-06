@@ -1,5 +1,6 @@
 from paho.mqtt import client as mqtt_client
 import random
+import time
 
 broker = "test.mosquitto.org"
 topic = "python/mqtt_project"
@@ -10,9 +11,9 @@ client_id = f"subscribe-{random.randint(1,1000)}"
 
 
 def broker_connection():
-    def on_connect(client, userdata, flags, rc):
+    def on_connect(rc):
         if rc == 0:
-            print("Connection Succesful!")
+            print("Connection Successful!")
         else:
             print("Connection Failed, reason {rc}")
 
@@ -22,19 +23,29 @@ def broker_connection():
 
     return client
 
-
+    
 def subscribe(client):
-    def on_message(client, userdata, msg):
-        print(f"Received '{msg.payload.decode()}' from '{msg.topic}' topic")
+    message_count = 1
+    
+    while True:
+        time.sleep(5)
 
-    client.subscribe(topic)
-    client.on_message = on_message
+        def on_message(msg):
+            print(f"Received '{msg.payload.decode()}' from '{msg.topic}' topic")
 
+        client.subscribe(topic)
+        client.on_message = on_message
+    
+        message_count += 1
+
+        if message_count > 5:
+            break
 
 def run():
     client = broker_connection()
+    client.loop_start()
     subscribe(client)
-    client.loop_forever()
+    client.loop_stop()
 
 
 if __name__ == "__main__":

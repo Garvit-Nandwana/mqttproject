@@ -12,7 +12,7 @@ client_id = f"publish-{random.randint(1,1000)}"
 
 
 def broker_connection():
-    def on_connect(client, userdata, flags, rc):
+    def on_connect(rc):
         if rc == 0:
             print("Connection Successful!")
         else:
@@ -30,10 +30,11 @@ def broker_connection():
 
 def publish(client):
     message_count = 1
-    data = random_data()
 
     while True:
         time.sleep(4)
+
+        data = random_data()
 
         message = f"{message_count}. {data}"
         
@@ -44,9 +45,9 @@ def publish(client):
         status = result[0]
 
         if status == 0:
-            print("'{message}' sent to topic {topic}")
+            print(f"'{message}' sent to topic '{topic}'")
         else:
-            print("Failed to sent message to topic {topic}")
+            print(f"Failed to sent message to topic '{topic}'")
 
         message_count += 1
 
