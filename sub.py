@@ -25,7 +25,7 @@ def broker_connection():
 
 def subscribe(client):
     def on_message(client, userdata, msg):
-        print(f"Received '{msg}' from '{msg.topic}'")
+        print(f"Received '{msg.payload.decode()}' from '{msg.topic}' topic")
 
     client.subscribe(topic)
     client.on_message = on_message
